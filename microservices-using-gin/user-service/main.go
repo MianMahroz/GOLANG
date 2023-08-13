@@ -37,7 +37,11 @@ func serveApplication() {
 
 	publicRoutes := router.Group("/auth")
 	publicRoutes.POST("/register", controller.Register)
-	publicRoutes.GET("/user/:name", controller.GetUserDetailsByName)
+	publicRoutes.POST("/login", controller.Login)
+
+	privateRoutes := router.Group("/auth")
+	privateRoutes.GET("/user/:name", controller.GetUserDetailsByName)
+	privateRoutes.GET("/user", controller.GetUserDetailsById)
 
 	err := router.Run(":8000")
 	if err != nil {

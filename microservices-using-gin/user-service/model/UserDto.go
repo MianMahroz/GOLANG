@@ -2,6 +2,6 @@ package model
 
 type UserDto struct {
 	Id       int
-	UserName string `json:"userName"`
+	Username string `json:"username"`
 	Password string `json:"password"`
 }
