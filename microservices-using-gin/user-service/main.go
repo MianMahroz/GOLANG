@@ -7,6 +7,7 @@ import (
 	"log"
 	"user-service/controller"
 	"user-service/database"
+	"user-service/middleware"
 	"user-service/model"
 )
 
@@ -39,9 +40,11 @@ func serveApplication() {
 	publicRoutes.POST("/register", controller.Register)
 	publicRoutes.POST("/login", controller.Login)
 
-	privateRoutes := router.Group("/auth")
-	privateRoutes.GET("/user/:name", controller.GetUserDetailsByName)
-	privateRoutes.GET("/user", controller.GetUserDetailsById)
+	protectedRoutes := router.Group("/api")
+	protectedRoutes.Use(middleware.JWTAuthMiddleware())
+
+	protectedRoutes.GET("/user/:name", controller.GetUserDetailsByName)
+	protectedRoutes.GET("/user", controller.GetUserDetailsById)
 
 	err := router.Run(":8000")
 	if err != nil {

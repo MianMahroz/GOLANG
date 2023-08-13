@@ -32,7 +32,6 @@ func (userService UserServiceImpl) LoginUser() (model.UserDto, error) {
 	var userRepo = repo.UserRepo{Entity: model.UserEntity{Username: userService.UserDto.Username}} // linking user with repo
 
 	user, err := userRepo.FindUserByName()
-
 	if err != nil || user.Id <= 0 {
 		return model.UserDto{}, errors.New("no USER FOUND")
 	}
@@ -42,7 +41,12 @@ func (userService UserServiceImpl) LoginUser() (model.UserDto, error) {
 		return model.UserDto{}, errors.New("invalid password")
 	}
 
-	return model.UserDto{Id: user.Id, Username: user.Username, Password: user.Password}, nil
+	jwt, err := helper.GenerateJWT(user.Id)
+	if err != nil {
+		return model.UserDto{}, err
+	}
+
+	return model.UserDto{Id: user.Id, Username: user.Username, Password: user.Password, Token: jwt}, nil
 }
 
 func (userService UserServiceImpl) GetUserByName() (model.UserDto, error) {
@@ -50,11 +54,12 @@ func (userService UserServiceImpl) GetUserByName() (model.UserDto, error) {
 
 	user, err := userRepo.FindUserByName()
 
-	if err != nil {
-		return model.UserDto{}, err
+	if err != nil || user.Id <= 0 {
+		return model.UserDto{}, errors.New("no user found")
 	}
 	return model.UserDto{Id: user.Id, Username: user.Username, Password: user.Password}, nil
 }
+
 func (userService UserServiceImpl) GetUserById() (model.UserDto, error) {
 	var userRepo = repo.UserRepo{Entity: model.UserEntity{Id: userService.UserDto.Id}}
 

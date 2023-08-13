@@ -8,8 +8,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"html"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 	"user-service/model"
+	"user-service/repo"
 )
 
 var privateKey = []byte(os.Getenv("JWT_PRIVATE_KEY"))
@@ -34,15 +37,15 @@ func TrimString(str string) string {
 	return html.EscapeString(strings.TrimSpace(str))
 }
 
-//func GenerateJWT(user service.User) (string, error) {
-//	tokenTTL, _ := strconv.Atoi(os.Getenv("TOKEN_TTL"))
-//	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-//		"id":  user.Id,
-//		"iat": time.Now().Unix(),
-//		"eat": time.Now().Add(time.Second * time.Duration(tokenTTL)).Unix(),
-//	})
-//	return token.SignedString(privateKey)
-//}
+func GenerateJWT(userId int) (string, error) {
+	tokenTTL, _ := strconv.Atoi(os.Getenv("TOKEN_TTL"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":  userId,
+		"iat": time.Now().Unix(),
+		"eat": time.Now().Add(time.Second * time.Duration(tokenTTL)).Unix(),
+	})
+	return token.SignedString(privateKey)
+}
 
 func ValidateJWT(context *gin.Context) error {
 	token, err := getToken(context)
@@ -61,23 +64,22 @@ func ValidateJWT(context *gin.Context) error {
 }
 
 func CurrentUser(context *gin.Context) (model.UserEntity, error) {
-	//err := ValidateJWT(context)
-	//if err != nil {
-	//	return service.User{}, err
-	//}
-	//
-	//token, _ := getToken(context)
-	//claims, _ := token.Claims.(jwt.MapClaims)
-	//userId := int(claims["id"].(int))
+	err := ValidateJWT(context)
+	if err != nil {
+		return model.UserEntity{}, err
+	}
 
-	//user := service.User{Id: userId}
-	//u, err := user.GetUserById()
+	token, _ := getToken(context)
+	claims, _ := token.Claims.(jwt.MapClaims)
+	userId := int(claims["id"].(int))
 
-	//if err != nil {
-	//	return service.User{}, err
-	//}
+	var userRepo = repo.UserRepo{Entity: model.UserEntity{Id: userId}} // linking user with repo
+	user, err := userRepo.FindUserById()
+	if err != nil {
+		return model.UserEntity{}, err
+	}
 
-	return model.UserEntity{}, nil
+	return user, nil
 }
 
 func getToken(context *gin.Context) (*jwt.Token, error) {
