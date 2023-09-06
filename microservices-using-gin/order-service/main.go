@@ -24,7 +24,7 @@ func main() {
 func serveApplication() {
 	router := gin.Default()
 
-	publicRoutes := router.Group("/auth")
+	publicRoutes := router.Group("/api")
 	publicRoutes.POST("/saveOrder", dependencies.OrderControllerInstance.SaveOrder)
 
 	//protectedRoutes := router.Group("/api")
