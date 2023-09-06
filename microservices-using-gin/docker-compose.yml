@@ -1,0 +1,25 @@
+version: "2.4"
+services:
+
+  order-service:
+    container_name: order-service
+    build: ./order-service/
+    ports:
+      - "8001:8001"
+    environment:
+      DB_HOST: "postgres"
+      DB_USER: "postgres"
+      DB_PASSWORD: "admin"
+      DB_NAME: "order_db"
+      DB_PORT: "5432"
+    depends_on:
+      - "db"
+
+  db:
+    image: "postgres:14-alpine"
+    container_name: postgres
+    ports: [5432:5432]
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: order_db
+

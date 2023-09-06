@@ -1,7 +1,8 @@
 package model
 
 type OrderDto struct {
-	OrderId   int `json:"orderId"`
-	ProductId int `json:"productId"`
-	Qty       int `json:"qty"`
+	OrderNumber string `json:"orderNumber"`
+	ProductId   int    `json:"productId"`
+	Qty         int    `json:"qty"`
+	UserId      int    `json:"userId"`
 }

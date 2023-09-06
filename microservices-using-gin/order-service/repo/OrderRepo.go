@@ -19,6 +19,6 @@ func NewOrderRepo(db *gorm.DB) OrderRepo {
 }
 
 func (s orderRepo) SaveOrder(entity model.OrderEntity) (string, error) {
-	res := s.database.Create(entity)
+	res := s.database.Create(&entity)
 	return strconv.Itoa(entity.Id), res.Error
 }
