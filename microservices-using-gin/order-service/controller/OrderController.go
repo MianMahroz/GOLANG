@@ -34,7 +34,7 @@ func (c *orderController) SaveOrder(context *gin.Context) {
 	res, err := c.orderService.CreateOrder(input)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"err": err})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 	context.JSON(http.StatusOK, gin.H{"response": res})
 }
