@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	loadEnv()
+	//loadEnv()
 	loadDatabase()
 	serveApplication()
 }
@@ -40,13 +40,13 @@ func serveApplication() {
 	publicRoutes.POST("/register", controller.Register)
 	publicRoutes.POST("/login", controller.Login)
 
-	protectedRoutes := router.Group("/api")
+	protectedRoutes := router.Group("/user")
 	protectedRoutes.Use(middleware.JWTAuthMiddleware())
 
-	protectedRoutes.GET("/user/:name", controller.GetUserDetailsByName)
-	protectedRoutes.GET("/user", controller.GetUserDetailsById)
+	protectedRoutes.GET("/:name", controller.GetUserDetailsByName)
+	protectedRoutes.GET("/details", controller.GetUserDetailsById)
 
-	err := router.Run(":8000")
+	err := router.Run(":8002")
 	if err != nil {
 		panic(err)
 	}

@@ -16,8 +16,26 @@ services:
       - "db"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.orderservice.entrypoints=http"
-      - "traefik.http.routers.orderservice.rule=Host(`localhost`)"
+      - "traefik.http.routers.order-service.entrypoints=http"
+      - "traefik.http.routers.order-service.rule=(Host(`localhost`) &&  PathPrefix(`/order`))"
+
+  user-service:
+    container_name: user-service
+    build: ./user-service/
+    ports:
+      - "8002:8002"
+    environment:
+      DB_HOST: "postgres"
+      DB_USER: "postgres"
+      DB_PASSWORD: "admin"
+      DB_NAME: "user_db"
+      DB_PORT: "5432"
+    depends_on:
+      - "db"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-service.entrypoints=http"
+      - "traefik.http.routers.user-service.rule=(Host(`localhost`) &&  PathPrefix(`/user`))"
 
   db:
     image: "postgres:14-alpine"
