@@ -7,7 +7,6 @@ import (
 	"log"
 	"user-service/controller"
 	"user-service/database"
-	"user-service/middleware"
 	"user-service/model"
 )
 
@@ -41,7 +40,7 @@ func serveApplication() {
 	publicRoutes.POST("/login", controller.Login)
 
 	protectedRoutes := router.Group("/user")
-	protectedRoutes.Use(middleware.JWTAuthMiddleware())
+	//protectedRoutes.Use(middleware.JWTAuthMiddleware())
 
 	protectedRoutes.GET("/:name", controller.GetUserDetailsByName)
 	protectedRoutes.GET("/details", controller.GetUserDetailsById)
